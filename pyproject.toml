@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gaterenderer"
+version = "0.1.0"
+description = "Massively-parallel CUDA ray-cast renderer for square gate segmentation masks."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Chaitanya Katti" }]
+keywords = ["cuda", "raycasting", "segmentation"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Environment :: GPU :: NVIDIA CUDA",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+dependencies = [
+    "numpy",
+    "opencv-python",
+    "torch>=2.0",
+]
+
+[project.optional-dependencies]
+examples = ["torchvision", "tqdm"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+gaterenderer = ["_kernels/*.cu", "_kernels/*.cpp"]

@@ -1,0 +1,2 @@
+include README.md
+recursive-include src/gaterenderer/_kernels *.cu *.cpp
