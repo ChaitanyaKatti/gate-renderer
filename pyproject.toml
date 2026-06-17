@@ -3,7 +3,7 @@ requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gaterenderer"
+name = "gate-renderer"
 version = "0.1.0"
 description = "Massively-parallel CUDA ray-cast renderer for square gate segmentation masks."
 readme = "README.md"
