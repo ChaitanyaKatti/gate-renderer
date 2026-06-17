@@ -46,7 +46,7 @@ class GateRenderer:
         self._module = load_raycast_module(verbose=verbose)
 
         # Per-quad geometry, packed into a per-instance global-memory tensor.
-        self.set_quads((gate_config))
+        self._packed_quads = self._pack_quads(gate_config)
 
         # Precomputed, undistorted, normalized camera-space rays [H, W, 4].
         self.rays_cam = self._build_rays(K, D)
@@ -75,7 +75,7 @@ class GateRenderer:
 
         return torch.from_numpy(rays).to(self.device).contiguous()
 
-    def set_quads(self, gate_config: dict) -> None:
+    def _pack_quads(self, gate_config: dict) -> torch.Tensor:
         poses   = torch.tensor(gate_config["poses"])
         roll    = torch.tensor(gate_config.get("roll", [0.0] * len(poses)))
         pitch   = torch.tensor(gate_config.get("pitch", [0.0] * len(poses)))
@@ -98,8 +98,7 @@ class GateRenderer:
         quads[:, 14] = 0.0
         quads[:, 15] = 0.0  
 
-        self.n_quads = n_quads
-        self._packed_quads = quads.contiguous()
+        return quads.contiguous()
 
     @torch.no_grad()
     def render(self, c2w_matrices) -> torch.Tensor:
