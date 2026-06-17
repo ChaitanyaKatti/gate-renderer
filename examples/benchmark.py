@@ -22,7 +22,6 @@ def main():
 
     renderer = GateRenderer(
         gate_config=SAMPLE_GATE_CONFIG,
-        n_cams=BATCH_SIZE,
         K=scale_intrinsics(SAMPLE_K, CALIB_RES, RENDER_RES),
         D=SAMPLE_D,
         resolution=RENDER_RES,

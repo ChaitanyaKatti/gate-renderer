@@ -34,12 +34,12 @@ class GateRenderer:
         verbose: print the kernel compilation log on first construction.
     """
 
-    def __init__(self, gate_config, n_cams, K, D, resolution, device="cuda", verbose=False):
+    def __init__(self, gate_config, K, D, resolution, device="cuda", verbose=False):
         self.device = torch.device(device)
         if self.device.type == "cuda" and not torch.cuda.is_available():
             raise RuntimeError("CUDA requested but torch.cuda.is_available() is False.")
 
-        self.n_cams = int(n_cams)
+        # self.n_cams = int(n_cams)
         self.resolution = (int(resolution[0]), int(resolution[1]))
         self.H, self.W = self.resolution
 
@@ -52,9 +52,9 @@ class GateRenderer:
         self.rays_cam = self._build_rays(K, D)
 
         # Reused output buffer (overwritten in place each render).
-        self._output_buf = torch.zeros(
-            (self.n_cams, self.H, self.W), dtype=torch.uint8, device=self.device
-        )
+        self._output_buf = None #torch.zeros(
+            # (self.n_cams, self.H, self.W), dtype=torch.uint8, device=self.device
+        # )
 
     def _build_rays(self, K, D) -> torch.Tensor:
         K = np.asarray(K, dtype=np.float64)
@@ -114,9 +114,13 @@ class GateRenderer:
         c2w = torch.as_tensor(c2w_matrices, dtype=torch.float32, device=self.device)
         if c2w.ndim == 2:
             c2w = c2w.unsqueeze(0)
-        if c2w.shape[0] != self.n_cams or c2w.shape[1:] != (4, 4):
+        if c2w.shape[1:] != (4, 4):
             raise ValueError(
-                f"c2w_matrices must have shape [{self.n_cams}, 4, 4], got {tuple(c2w.shape)}"
+                f"c2w_matrices must have shape [N, 4, 4], got {tuple(c2w.shape)}"
+            )
+        if self._output_buf is None or self._output_buf.shape[0] != c2w.shape[0]:
+            self._output_buf = torch.zeros(
+                (c2w.shape[0], self.H, self.W), dtype=torch.uint8, device=self.device
             )
 
         self._module.raycast(
