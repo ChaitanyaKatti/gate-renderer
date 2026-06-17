@@ -15,11 +15,11 @@ __device__ inline float dot(const vec3& a, const vec3& b) {
     return a.x*b.x + a.y*b.y + a.z*b.z;
 }
 
-// Per-quad geometry, precomputed once on the host (see GateRenderer.set_quads)
-// and passed in as a global-memory buffer [n_quads, 16] so each renderer owns
-// its own geometry (no shared __constant__ state). All threads in a warp read
+// Per-quad geometry, precomputed once on the host and passed in as a
+// global-memory buffer [n_quads, 16] so each renderer owns its own 
+// geometry (no shared __constant__ state). All threads in a warp read
 // the same quad slot, so these loads broadcast through L1.
-//   [0..2]  center of gate
+//   [0..2]  P = center of gate
 //   [3..5]  normal = forward vector
 //   [6..8]  u = left vector
 //   [9..11] v = up vector

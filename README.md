@@ -18,7 +18,7 @@ global-memory buffer and staged into shared memory inside the kernel, so each
 
 - NVIDIA GPU + CUDA toolkit (the kernel is JIT-compiled on first use via
   `torch.utils.cpp_extension.load_inline`).
-- PyTorch built for your CUDA version (install it yourself; not pinned here).
+- PyTorch built for your CUDA version
 
 ## Install
 
@@ -43,7 +43,7 @@ from gaterenderer.sample_scene import (
 
 render_res = (244, 324)  # (H, W)
 renderer = GateRenderer(
-    gate_config=SAMPLE_CONFIG,                               # [n_quads, 4, 3]
+    gate_config=SAMPLE_CONFIG,
     n_cams=4096,
     K=scale_intrinsics(SAMPLE_K, CALIB_RES, render_res),
     D=SAMPLE_D,
